@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Doctor Platform — Master Blueprint</title>
+<style>
+  :root{
+    --teal:#0e7c86; --teal-d:#0a5a62; --ink:#16242b; --slate:#48606b;
+    --line:#d8e3e6; --bg:#f4f8f9; --accent:#127a8a; --amber:#b5651d; --good:#1f8a55;
+    --soft:#eef5f6;
+  }
+  *{box-sizing:border-box;}
+  html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  body{ font-family:"Segoe UI", "Helvetica Neue", Arial, sans-serif; color:var(--ink);
+        font-size:10.6px; line-height:1.55; margin:0; }
+  h1,h2,h3,h4{ color:var(--teal-d); line-height:1.2; margin:0 0 .35em; font-weight:700;}
+  h2{ font-size:19px; border-bottom:3px solid var(--teal); padding-bottom:5px; margin-top:6px;}
+  h3{ font-size:13.5px; color:var(--accent); margin-top:14px;}
+  h4{ font-size:11.5px; color:var(--slate); margin-top:11px; text-transform:uppercase; letter-spacing:.4px;}
+  p{ margin:.4em 0;}
+  ul,ol{ margin:.3em 0 .5em; padding-left:18px;}
+  li{ margin:.18em 0;}
+  a{ color:var(--accent); text-decoration:none;}
+  code{ font-family:"Consolas","Courier New",monospace; background:#eef3f4; padding:1px 4px; border-radius:3px; font-size:9.6px; color:#0a4a52;}
+  pre{ font-family:"Consolas","Courier New",monospace; background:#0f2b30; color:#d7eef0;
+       padding:11px 13px; border-radius:7px; font-size:9px; line-height:1.45; overflow:hidden;
+       white-space:pre-wrap; margin:.5em 0;}
+  pre.tree{ background:#f3f8f9; color:#173b41; border:1px solid var(--line);}
+  table{ border-collapse:collapse; width:100%; margin:.55em 0; font-size:9.3px;}
+  th,td{ border:1px solid var(--line); padding:5px 7px; text-align:left; vertical-align:top;}
+  th{ background:var(--teal); color:#fff; font-weight:600;}
+  tr:nth-child(even) td{ background:var(--soft);}
+  .center{text-align:center;} .nowrap{white-space:nowrap;}
+  .chapter{ break-before:page; padding-top:4px;}
+  .tag{ display:inline-block; background:var(--teal); color:#fff; border-radius:11px;
+        padding:1px 9px; font-size:8.4px; font-weight:600; letter-spacing:.3px;}
+  .callout{ border-left:4px solid var(--teal); background:var(--soft); padding:8px 12px;
+            border-radius:0 6px 6px 0; margin:.6em 0;}
+  .callout.warn{ border-color:var(--amber); background:#fbf2e9;}
+  .callout.good{ border-color:var(--good); background:#eaf6ef;}
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .card{ border:1px solid var(--line); border-radius:7px; padding:9px 11px; background:#fff;}
+  .muted{ color:var(--slate);}
+  .small{ font-size:8.8px;}
+  .kpi{ font-weight:700; color:var(--teal-d);}
+
+  /* COVER */
+  .cover{ height:1000px; background:linear-gradient(150deg,#0e7c86 0%,#0a5a62 55%,#08474e 100%);
+          color:#fff; padding:70px 64px; position:relative; break-after:page;}
+  .cover h1{ color:#fff; font-size:46px; line-height:1.07; margin-top:120px; letter-spacing:-.5px;}
+  .cover .sub{ font-size:17px; color:#bfe6ea; margin-top:18px; max-width:560px; line-height:1.45;}
+  .cover .pill{ display:inline-block; border:1px solid #5fb3bd; color:#d4f0f3; border-radius:20px;
+                padding:5px 16px; font-size:11px; letter-spacing:1px; text-transform:uppercase;}
+  .cover .meta{ position:absolute; bottom:64px; left:64px; right:64px; font-size:11px;
+                color:#cdeaed; border-top:1px solid rgba(255,255,255,.25); padding-top:16px;
+                display:flex; justify-content:space-between;}
+  .cover .chips span{ display:inline-block; background:rgba(255,255,255,.12); border-radius:6px;
+                padding:5px 11px; margin:5px 7px 0 0; font-size:10.5px;}
+
+  /* TOC */
+  .toc{ break-after:page;}
+  .toc ol{ list-style:none; padding:0; counter-reset:ch;}
+  .toc li{ counter-increment:ch; display:flex; justify-content:space-between; align-items:baseline;
+           border-bottom:1px dotted var(--line); padding:5px 0; font-size:11px;}
+  .toc li::before{ content:"Ch " counter(ch) ".  "; color:var(--teal); font-weight:700; min-width:54px;}
+  .toc .t{ flex:1;}
+  .secnum{ color:var(--teal); font-weight:700; }
+</style>
+</head>
+<body>
+
+<!-- ================= COVER ================= -->
+<section class="cover">
+  <span class="pill">Master Blueprint · v0</span>
+  <h1>Doctor Platform</h1>
+  <div class="sub">An AI-first doctor <b>listing · lead-capture · booking</b> portal.
+  Research, product spec, role model, multi-agent AI design, architecture, deployment &amp; cost,
+  and the full Claude&nbsp;Code&nbsp;+&nbsp;Codex build methodology.</div>
+  <div style="margin-top:30px" class="chips">
+    <span>🏥 Inspired by Practo &amp; Apollo247</span>
+    <span>📍 Udaipur → India</span>
+    <span>▲ Vercel + Supabase</span>
+    <span>🤖 5 AI Agents</span>
+  </div>
+  <div class="meta">
+    <div><b>Prepared for:</b> Naman &nbsp;·&nbsp; <b>Market:</b> Udaipur, Rajasthan (→ India)</div>
+    <div><b>Date:</b> 16 June 2026 &nbsp;·&nbsp; <b>Status:</b> Blueprint for build</div>
+  </div>
+</section>
+
+<!-- ================= TOC ================= -->
+<section class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><span class="t">Executive Summary</span></li>
+    <li><span class="t">Market &amp; Competitor Research — Practo &amp; Apollo247</span></li>
+    <li><span class="t">Product Vision &amp; Scope</span></li>
+    <li><span class="t">User Roles &amp; RBAC Model</span></li>
+    <li><span class="t">Core Feature Modules</span></li>
+    <li><span class="t">The AI Layer — Multiple Agents &amp; LLM Choice</span></li>
+    <li><span class="t">System Architecture</span></li>
+    <li><span class="t">Data Model</span></li>
+    <li><span class="t">Frontend Specification</span></li>
+    <li><span class="t">Backend &amp; API Specification</span></li>
+    <li><span class="t">Deployment — Vercel + Supabase</span></li>
+    <li><span class="t">Cost Analysis (INR + USD)</span></li>
+    <li><span class="t">Security &amp; Compliance (India / DPDP)</span></li>
+    <li><span class="t">Build Methodology — Claude Code + Codex + MCP</span></li>
+    <li><span class="t">Phased Project Plan</span></li>
+    <li><span class="t">Appendices — Ready-to-paste Templates</span></li>
+  </ol>
+  <div class="callout small"><b>How to read this:</b> Chapters 1–13 are the <i>product &amp;
+  architecture</i> spec. Chapter 14 is the <i>build process</i> (the part about agent.md, handover
+  files, MD-memory, version backups and MCP). Chapter 16 has copy-paste templates. Working copies
+  of the key docs also live as markdown in <code>/docs</code>.</div>
+</section>
+
+<!-- ================= 1. EXEC SUMMARY ================= -->
+<section class="chapter">
+  <h2><span class="secnum">1.</span> Executive Summary</h2>
+  <p>We are building a focused, <b>AI-first doctor portal</b> for <b>Udaipur, Rajasthan</b>, designed
+  to expand across India. Patients discover doctors, and the moment they want to connect, a
+  <b>popup form</b> captures them as a <b>lead</b>; staff then convert that lead into a confirmed
+  <b>booking</b>. It takes the most valuable, lowest-cost parts of Practo and Apollo247 — discovery,
+  listings, lead capture, booking — and ships them fast, leaving heavier features (video consult,
+  medicine, labs, payments) for later phases.</p>
+
+  <div class="grid2">
+    <div class="card"><h4>What v1 is</h4>
+      <ul>
+        <li>Doctor/clinic <b>listings</b> &amp; onboarding</li>
+        <li>Patient <b>discovery &amp; AI smart search</b></li>
+        <li><b>Lead capture</b> popup (the "call/book" flow)</li>
+        <li><b>Appointment booking</b> + reminders</li>
+        <li><b>Role-based</b> admin / manager / doctor / front-desk</li>
+        <li><b>5 AI agents</b> assisting throughout</li>
+      </ul>
+    </div>
+    <div class="card"><h4>What v1 is not (yet)</h4>
+      <ul>
+        <li>Video / audio / chat consultation</li>
+        <li>e-Prescriptions &amp; online payments</li>
+        <li>Medicine delivery &amp; lab tests</li>
+        <li>Full health-record vault, ABDM/ABHA</li>
+      </ul>
+      <p class="small muted">Architected so each can bolt on without a rewrite.</p>
+    </div>
+  </div>
+
+  <h3>Why this approach wins</h3>
+  <ul>
+    <li><b>Cheap to launch:</b> Vercel + Supabase run near-free at MVP volumes (see Ch.&nbsp;12).</li>
+    <li><b>Fast to build:</b> a two-agent workflow (Claude Code + Codex) on a proven stack.</li>
+    <li><b>Differentiated:</b> AI search, lead assistance, triage and a staff copilot from day one.</li>
+    <li><b>Local first:</b> winning Udaipur's supply (doctors) and demand (patients) before scaling.</li>
+  </ul>
+
+  <h3>The 3-phase roadmap</h3>
+  <table>
+    <tr><th>Phase</th><th>Theme</th><th>Headline scope</th></tr>
+    <tr><td><b>1 — MVP</b></td><td>Listing · Lead · Booking</td><td>Listings, search, lead popup,
+      booking, RBAC, 2 AI agents (Smart Search + Lead-Form Assistant). Udaipur launch.</td></tr>
+    <tr><td><b>2 — Engage</b></td><td>Convert &amp; retain</td><td>Notifications, reviews, full
+      agent suite (triage, staff copilot, content/SEO), analytics, more cities.</td></tr>
+    <tr><td><b>3 — Expand</b></td><td>Healthcare super-app</td><td>Payments, teleconsult,
+      labs/medicine, health records, ABDM/ABHA.</td></tr>
+  </table>
+  <div class="callout good small"><b>Recommended LLM stack (answer to "which AI"):</b> serve all
+  models through <b>Vercel AI Gateway</b> and route by task — <b>Claude Haiku 4.5</b> for cheap
+  high-volume work, <b>Claude Sonnet 4.6</b> as the reasoning default, <b>Claude Opus 4.8</b> only
+  for the hardest agentic flows, plus a small embedding model in <b>Supabase pgvector</b> for
+  semantic search. Full detail in Chapter 6.</div>
+</section>
+
+<!-- ================= 2. RESEARCH ================= -->
+<section class="chapter">
+  <h2><span class="secnum">2.</span> Market &amp; Competitor Research</h2>
+  <p>Both reference platforms are Indian health-tech leaders. We study them to copy what is proven
+  and cheap, and defer what is heavy and capital-intensive.</p>
+
+  <div class="grid2">
+    <div class="card"><h4>Practo</h4>
+      <ul>
+        <li>Doctor/clinic <b>discovery</b> by location, specialty, availability, reviews</li>
+        <li><b>Appointment booking</b> (online + clinic-side)</li>
+        <li><b>Practo Ray</b> — clinic management for ~50k doctors: scheduler, EMR/EHR, billing,
+          SMS alerts, reminders, reports</li>
+        <li>Online <b>video consultation</b> across 25+ specialties; <b>Practo Plus</b> subscription</li>
+        <li>Medicine ordering &amp; diagnostic tests; ratings/reviews</li>
+      </ul>
+      <p class="small muted">Takeaway: their <b>discovery + booking + clinic-side tools</b> are
+      exactly our v1. Their consult/pharmacy layers are our later phases.</p>
+    </div>
+    <div class="card"><h4>Apollo247</h4>
+      <ul>
+        <li><b>Online consultation</b> (video/audio/chat) — 2200+ doctors, 55+ specialties</li>
+        <li><b>Medicine delivery</b> (19-min in metros), 75k+ SKUs</li>
+        <li><b>Home lab tests</b> via Apollo Diagnostics</li>
+        <li><b>Ask Apollo</b> — an <b>AI-backed symptom checker</b></li>
+        <li><b>Health-record vault</b>; <b>Apollo Circle</b> membership</li>
+      </ul>
+      <p class="small muted">Takeaway: <b>Ask Apollo</b> validates our <b>AI symptom-triage</b>
+      agent. The rest is multi-vertical scale we don't need on day one.</p>
+    </div>
+  </div>
+
+  <h3>Feature decision matrix</h3>
+  <table>
+    <tr><th>Capability</th><th>Practo</th><th>Apollo247</th><th>Our v1</th></tr>
+    <tr><td>Doctor discovery &amp; search</td><td>✓</td><td>✓</td><td class="kpi">Adopt</td></tr>
+    <tr><td>Doctor listing / profile</td><td>✓</td><td>✓</td><td class="kpi">Adopt</td></tr>
+    <tr><td>Lead capture form ("call/book")</td><td>partial</td><td>partial</td><td class="kpi">Adopt (core)</td></tr>
+    <tr><td>Appointment booking</td><td>✓</td><td>✓</td><td class="kpi">Adopt</td></tr>
+    <tr><td>SMS / WhatsApp reminders</td><td>✓</td><td>✓</td><td class="kpi">Adopt</td></tr>
+    <tr><td>Reviews &amp; ratings</td><td>✓</td><td>✓</td><td class="kpi">Adopt (P2)</td></tr>
+    <tr><td>AI symptom checker</td><td>—</td><td>✓ (Ask Apollo)</td><td class="kpi">Adopt (P2)</td></tr>
+    <tr><td>AI smart search / match</td><td>partial</td><td>partial</td><td class="kpi">Adopt (differentiator)</td></tr>
+    <tr><td>Clinic management (EMR/billing)</td><td>✓ (Ray)</td><td>✓</td><td>Defer</td></tr>
+    <tr><td>Video / audio consultation</td><td>✓</td><td>✓</td><td>Defer (P3)</td></tr>
+    <tr><td>Online payments</td><td>✓</td><td>✓</td><td>Defer (P3)</td></tr>
+    <tr><td>Medicine delivery</td><td>✓</td><td>✓</td><td>Skip (P3+)</td></tr>
+    <tr><td>Lab tests</td><td>✓</td><td>✓</td><td>Skip (P3+)</td></tr>
+    <tr><td>Health-record vault</td><td>✓</td><td>✓</td><td>Defer</td></tr>
+  </table>
+  <div class="callout small"><b>Our edge:</b> we are smaller and local, so we win on <b>speed of
+  response</b> (SLA on every lead), <b>hyperlocal supply</b> in Udaipur, and <b>AI woven through
+  the whole funnel</b> — not bolted on.</div>
+</section>
+
+<!-- ================= 3. SCOPE ================= -->
+<section class="chapter">
+  <h2><span class="secnum">3.</span> Product Vision &amp; Scope</h2>
+  <p><b>Vision:</b> the fastest way for a patient in Udaipur to find the right doctor and get a
+  confirmed appointment — and the easiest way for a doctor to receive qualified, well-summarized
+  patients — with AI removing friction at every step.</p>
+
+  <h3>The core journey (the "call → popup form" flow, step by step)</h3>
+  <pre class="tree">Patient lands on site / specialty page (SEO)
+   └─► searches or browses doctors  ── AI Smart Search ranks matches
+        └─► opens a Doctor Profile (photo, specialties, fees, hours, reviews)
+             └─► taps  [ Call ]  or  [ Book Appointment ]
+                  └─►  POPUP FORM opens (modal)
+                        name · phone (OTP) · problem/symptoms · preferred time
+                        └─ AI Lead-Form Assistant: validates, summarizes, de-dupes
+                            └─►  LEAD created  (status: NEW, source tracked)
+                                 ├─ instant SMS/WhatsApp confirmation to patient
+                                 └─ realtime alert to Manager / Doctor / Front-desk
+                                      └─ staff contacts → books a slot → BOOKING
+                                           └─ reminders → visit → review request</pre>
+
+  <h3>In scope (v1)</h3>
+  <div class="grid2">
+    <div class="card small"><b>Patient side</b>
+      <ul><li>Search &amp; filters + AI smart search</li><li>Doctor profiles &amp; reviews</li>
+      <li>Lead popup (OTP-verified)</li><li>Booking &amp; self-service status</li>
+      <li>Symptom triage assistant (P2)</li></ul></div>
+    <div class="card small"><b>Doctor / staff side</b>
+      <ul><li>Onboarding, listing, verification/KYC</li><li>Availability &amp; slots</li>
+      <li>Lead pipeline + assignment + SLA</li><li>Booking calendar</li>
+      <li>Dashboards, reports, staff copilot</li></ul></div>
+  </div>
+
+  <h3>Explicitly out of scope (deferred)</h3>
+  <p class="muted">Video/audio/chat consult · e-prescriptions · online payments · medicine delivery
+  · lab tests · full EHR/health-record vault · ABDM/ABHA · multi-city operations tooling. Each has a
+  reserved hook in the data model and architecture so it can be added without a rewrite.</p>
+
+  <h3>Guiding principles</h3>
+  <ul>
+    <li><b>Speed of contact</b> is the product — every lead has an SLA timer.</li>
+    <li><b>Mobile-first, low-end Android friendly</b>, Hindi + English ready.</li>
+    <li><b>SEO-first</b> public pages (ISR) — organic discovery is the cheapest growth.</li>
+    <li><b>Trust</b>: verified doctors, moderated reviews, clear consent, medical disclaimers.</li>
+  </ul>
+</section>
+
+<!-- ================= 4. RBAC ================= -->
+<section class="chapter">
+  <h2><span class="secnum">4.</span> User Roles &amp; RBAC Model</h2>
+  <p>Authorization is enforced <b>server-side</b> with Supabase Auth + <b>Row Level Security (RLS)</b>
+  on every table. The browser is never trusted. There are six human roles plus one AI service role.</p>
+
+  <table>
+    <tr><th>Role</th><th>Who</th><th>Can do (summary)</th></tr>
+    <tr><td><b>Super Admin</b></td><td>Platform owner</td><td>Everything: billing, global settings,
+      create/suspend Admins, read audit log.</td></tr>
+    <tr><td><b>Admin</b></td><td>Ops lead</td><td>Verify doctors &amp; listings, manage Managers,
+      all leads/bookings, reports, moderate reviews.</td></tr>
+    <tr><td><b>Manager</b></td><td>Territory/desk lead</td><td>Assigned doctors/clinics + their
+      leads/bookings; assign &amp; follow up leads.</td></tr>
+    <tr><td><b>Doctor / Clinic owner</b></td><td>Supply</td><td>Own listing, availability, own
+      leads &amp; bookings; manage own front-desk staff.</td></tr>
+    <tr><td><b>Front-desk / Receptionist</b></td><td>Clinic staff</td><td>That clinic's leads &amp;
+      bookings only.</td></tr>
+    <tr><td><b>Patient</b></td><td>Demand</td><td>Browse, search, submit lead, book, view own
+      bookings &amp; submit reviews. Guest or account.</td></tr>
+    <tr><td><b>AI service role</b></td><td>Agents</td><td>Scoped backend identity; can only see what
+      its caller's role can see; every action audit-logged.</td></tr>
+  </table>
+
+  <h3>Permission matrix</h3>
+  <p class="small">✓ = full · ◑ = own/assigned scope only · ✕ = none</p>
+  <table>
+    <tr><th>Action / Role</th><th class="center">Super</th><th class="center">Admin</th>
+        <th class="center">Mgr</th><th class="center">Doctor</th><th class="center">Front-desk</th>
+        <th class="center">Patient</th></tr>
+    <tr><td>Platform settings &amp; billing</td><td class="center">✓</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td></tr>
+    <tr><td>Create/suspend Admins &amp; Managers</td><td class="center">✓</td><td class="center">◑</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td></tr>
+    <tr><td>Verify / approve listings</td><td class="center">✓</td><td class="center">✓</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td></tr>
+    <tr><td>Create / edit doctor listing</td><td class="center">✓</td><td class="center">✓</td><td class="center">◑</td><td class="center">◑</td><td class="center">✕</td><td class="center">✕</td></tr>
+    <tr><td>View leads</td><td class="center">✓</td><td class="center">✓</td><td class="center">◑</td><td class="center">◑</td><td class="center">◑</td><td class="center">◑</td></tr>
+    <tr><td>Assign / reassign leads</td><td class="center">✓</td><td class="center">✓</td><td class="center">◑</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td></tr>
+    <tr><td>Update lead status / notes</td><td class="center">✓</td><td class="center">✓</td><td class="center">◑</td><td class="center">◑</td><td class="center">◑</td><td class="center">✕</td></tr>
+    <tr><td>Manage availability / slots</td><td class="center">✓</td><td class="center">✓</td><td class="center">◑</td><td class="center">◑</td><td class="center">◑</td><td class="center">✕</td></tr>
+    <tr><td>Create / modify booking</td><td class="center">✓</td><td class="center">✓</td><td class="center">◑</td><td class="center">◑</td><td class="center">◑</td><td class="center">◑</td></tr>
+    <tr><td>Analytics / reports</td><td class="center">✓</td><td class="center">✓</td><td class="center">◑</td><td class="center">◑</td><td class="center">✕</td><td class="center">✕</td></tr>
+    <tr><td>Moderate reviews</td><td class="center">✓</td><td class="center">✓</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td></tr>
+    <tr><td>Submit review</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td><td class="center">◑</td></tr>
+    <tr><td>Run AI agents</td><td class="center">✓</td><td class="center">✓</td><td class="center">◑</td><td class="center">◑</td><td class="center">◑</td><td class="center">◑</td></tr>
+    <tr><td>Read audit log</td><td class="center">✓</td><td class="center">✓</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td><td class="center">✕</td></tr>
+  </table>
+  <div class="callout small"><b>RLS mechanism:</b> tenant-scoping columns
+  (<code>owner_doctor_id</code>, <code>clinic_id</code>, <code>assigned_manager_id</code>,
+  <code>patient_id</code>) are compared against <code>auth.uid()</code> and the user's role row in
+  every policy. The AI service role uses scoped service credentials and writes an
+  <code>audit_log</code> entry per action.</div>
+</section>
+
+<!-- ================= 5. FEATURES ================= -->
+<section class="chapter">
+  <h2><span class="secnum">5.</span> Core Feature Modules</h2>
+
+  <h3>5.1 Doctor onboarding &amp; listing</h3>
+  <p>Sign-up → build profile (name, specialties, qualifications, experience, languages, fees,
+  clinic &amp; location, hours, photos) → upload proof for <b>verification/KYC</b> → Admin approves
+  → listing goes live (SEO page). Doctors manage their own staff and availability.</p>
+
+  <h3>5.2 Discovery &amp; search</h3>
+  <p>Browse by specialty/area; filter by specialty, location, availability, gender, language, fee,
+  rating. <b>AI Smart Search</b> turns free text ("child fever doctor near Fatehsagar, evening")
+  into ranked matches using hybrid keyword + vector search and business rules.</p>
+
+  <h3>5.3 Lead capture (the popup)</h3>
+  <ul>
+    <li>Triggered by <b>Call</b> / <b>Book</b> on any profile or search card.</li>
+    <li>Collects name, <b>phone (OTP-verified)</b>, problem/symptoms, preferred time, consent.</li>
+    <li><b>AI Lead-Form Assistant</b> validates &amp; normalizes input, summarizes the problem,
+      de-dupes against existing leads, and tags the likely specialty.</li>
+    <li>Creates a <code>lead</code> with <b>source tracking</b> (which doctor/page/campaign).</li>
+    <li>Sends instant SMS/WhatsApp confirmation; raises a realtime alert to staff.</li>
+  </ul>
+
+  <h3>5.4 Lead pipeline</h3>
+  <p>Kanban/list of leads with status <b>New → Contacted → Booked → Closed/Lost</b>, assignment,
+  notes, an <b>SLA timer</b> (time-to-first-contact), and full activity history (<code>lead_events</code>).</p>
+
+  <h3>5.5 Appointment booking</h3>
+  <p>Per-doctor <b>slot calendar</b> from availability rules; create/confirm/reschedule/cancel;
+  double-booking prevention; automatic <b>reminders</b>; no-show tracking.</p>
+
+  <h3>5.6 Dashboards &amp; analytics</h3>
+  <p>Role-scoped dashboards: lead funnel, conversion, SLA breaches, bookings, show-rate, top
+  doctors/specialties, source attribution. Live via Supabase Realtime.</p>
+
+  <h3>5.7 Notifications</h3>
+  <p>SMS / WhatsApp / email for lead &amp; booking confirmations and reminders, behind a provider
+  adapter (MSG91 / Gupshup / Twilio) so we can swap vendors.</p>
+
+  <h3>5.8 Reviews &amp; ratings (P2)</h3>
+  <p>Post-visit rating requests; moderation queue; verified-visit badge; feeds search ranking.</p>
+</section>
+
+<!-- ================= 6. AI LAYER ================= -->
+<section class="chapter">
+  <h2><span class="secnum">6.</span> The AI Layer — Multiple Agents &amp; LLM Choice</h2>
+  <p>Everything AI runs through the <b>Vercel AI Gateway</b> (one API, provider fallbacks,
+  observability, optional zero-data-retention — important for health data) built with the
+  <b>AI SDK</b>. We <b>tier models by task</b> to keep cost low.</p>
+
+  <h3>6.1 Which LLM to use (direct recommendation)</h3>
+  <table>
+    <tr><th>Tier</th><th>Model</th><th>Use it for</th><th>Why</th></tr>
+    <tr><td>Cheap / high-volume</td><td><b>Claude Haiku 4.5</b></td><td>lead parsing &amp;
+      validation, classification, summaries, first-pass triage</td><td>fast &amp; low-cost at scale</td></tr>
+    <tr><td>Reasoning (default)</td><td><b>Claude Sonnet 4.6</b></td><td>smart-search synthesis,
+      staff copilot, content generation</td><td>best quality-per-rupee for real reasoning</td></tr>
+    <tr><td>Hardest only</td><td><b>Claude Opus 4.8</b></td><td>complex multi-step agentic flows,
+      long-context analysis</td><td>top capability, used sparingly</td></tr>
+    <tr><td>Embeddings</td><td>small embedding model<br><span class="small muted">(text-embedding-3-small
+      or open BGE)</span></td><td>semantic vectors for doctor search</td><td>cheap; stored in
+      Supabase <b>pgvector</b></td></tr>
+  </table>
+  <div class="callout good small"><b>Bottom line:</b> default to <b>Claude</b> via the AI Gateway,
+  start most calls on <b>Haiku</b>, escalate to <b>Sonnet</b> when quality needs it, reserve
+  <b>Opus</b> for the few hard cases. This single decision is the biggest lever on your AI bill.</div>
+
+  <h3>6.2 The five agents</h3>
+  <table>
+    <tr><th>#</th><th>Agent</th><th>Job</th><th>Model</th><th>Phase</th></tr>
+    <tr><td>1</td><td><b>Smart Search &amp; Match</b></td><td>free text → ranked doctors (vector +
+      keyword + rules)</td><td>Sonnet + embeddings</td><td>1</td></tr>
+    <tr><td>2</td><td><b>Lead-Form Assistant</b></td><td>autofill, validate, transcribe, summarize,
+      de-dupe leads</td><td>Haiku</td><td>1</td></tr>
+    <tr><td>3</td><td><b>Symptom Triage</b></td><td>symptoms → suggested specialty (<i>triage, not
+      diagnosis</i>)</td><td>Haiku→Sonnet</td><td>2</td></tr>
+    <tr><td>4</td><td><b>Staff Copilot</b></td><td>lead summaries, suggested replies, follow-up
+      nudges, daily reports</td><td>Sonnet</td><td>2</td></tr>
+    <tr><td>5</td><td><b>Content &amp; SEO</b></td><td>doctor bios, specialty pages, local SEO copy</td>
+      <td>Sonnet</td><td>2</td></tr>
+  </table>
+
+  <h3>6.3 Guardrails (all agents)</h3>
+  <ul>
+    <li>Run under the <b>AI service role</b>; <b>every action audit-logged</b> (<code>ai_runs</code>).</li>
+    <li><b>PII redaction</b> before model calls where possible; honour DPDP consent.</li>
+    <li>Token + rate limits and a <b>cost ceiling per tenant</b>.</li>
+    <li><b>Tools are RLS-scoped</b> — an agent only sees what its caller's role can see.</li>
+    <li><b>Medical safety</b>: triage shows a clear disclaimer, never diagnoses, and routes red-flag
+      symptoms (chest pain, stroke signs, breathing difficulty) straight to emergency guidance.</li>
+  </ul>
+  <div class="callout warn small"><b>Compliance note:</b> the symptom agent is a <i>triage helper</i>,
+  not a medical device. Keep the disclaimer visible and log consent.</div>
+</section>
+
+<!-- ================= 7. ARCHITECTURE ================= -->
+<section class="chapter">
+  <h2><span class="secnum">7.</span> System Architecture</h2>
+  <pre class="tree">  Patient / Staff browser
+        │  HTTPS
+        ▼
+  ┌──────────────────────────────────────────┐        ┌───────────────────────┐
+  │  Next.js (App Router) on VERCEL           │  ───►  │  Vercel AI Gateway     │
+  │   • Public SEO pages  (SSR / ISR)         │        │   → Claude Haiku/Sonnet│
+  │   • Role dashboards   (RSC + client)      │  ◄───  │   → Opus / embeddings  │
+  │   • Server Actions / Route Handlers       │        └───────────────────────┘
+  │   • Lead popup + booking engine           │
+  └───────────────┬──────────────────────────┘
+                  │  Postgres wire / SDK
+                  ▼
+  ┌──────────────────────────────────────────┐        ┌───────────────────────┐
+  │  SUPABASE                                 │        │  SMS / WhatsApp / Email│
+  │   • Postgres  (+ RLS, + pgvector)         │  ───►  │  MSG91 / Gupshup /     │
+  │   • Auth (JWT, roles)                     │        │  Twilio (adapter)      │
+  │   • Storage (photos, KYC docs)            │        └───────────────────────┘
+  │   • Realtime (live leads / bookings)      │
+  └──────────────────────────────────────────┘</pre>
+
+  <h3>Component responsibilities</h3>
+  <table>
+    <tr><th>Layer</th><th>Tech</th><th>Notes</th></tr>
+    <tr><td>Frontend</td><td>Next.js App Router on Vercel</td><td>ISR for SEO doctor/specialty
+      pages; RSC dashboards; mobile-first.</td></tr>
+    <tr><td>Backend</td><td>Server Actions + Route Handlers (Fluid Compute)</td><td>full Node.js,
+      low cold-starts; webhooks &amp; AI endpoints here.</td></tr>
+    <tr><td>Database</td><td>Supabase Postgres</td><td><b>RLS on every table</b>; pgvector for
+      embeddings; Realtime for dashboards.</td></tr>
+    <tr><td>Auth / RBAC</td><td>Supabase Auth</td><td>role in <code>user_roles</code>; enforced by
+      RLS + server checks.</td></tr>
+    <tr><td>AI</td><td>Vercel AI Gateway + AI SDK</td><td>agents in <code>/agents</code>; tiered
+      Claude models.</td></tr>
+    <tr><td>Messaging</td><td>Provider adapter</td><td>swap MSG91 / Gupshup / Twilio without code
+      churn.</td></tr>
+  </table>
+  <div class="callout small"><b>Why this stack:</b> minimal ops, generous free tiers, scales to
+  millions, and the managed primitives (Auth, RLS, Storage, Realtime, AI Gateway) mean we write
+  product code, not plumbing — ideal for an agent-built project.</div>
+</section>
+
+<!-- ================= 8. DATA MODEL ================= -->
+<section class="chapter">
+  <h2><span class="secnum">8.</span> Data Model</h2>
+  <p>Conventions: snake_case; every table has <code>id uuid pk</code>, <code>created_at</code>,
+  <code>updated_at</code>; money in <b>paise (int)</b>; timestamps UTC (shown <code>Asia/Kolkata</code>);
+  phones <b>E.164</b>.</p>
+
+  <h3>Core tables</h3>
+  <table>
+    <tr><th>Table</th><th>Purpose</th><th>Key columns</th></tr>
+    <tr><td><code>profiles</code></td><td>one row per auth user</td><td>id, full_name, phone, locale</td></tr>
+    <tr><td><code>user_roles</code></td><td>role assignment</td><td>user_id, role, scope (clinic/territory)</td></tr>
+    <tr><td><code>clinics</code></td><td>physical clinics</td><td>id, name, address, geo, owner_id</td></tr>
+    <tr><td><code>doctors</code></td><td>doctor entity</td><td>id, profile_id, clinic_id, exp, fee_paise, verified</td></tr>
+    <tr><td><code>specialties</code></td><td>master list</td><td>id, name, slug</td></tr>
+    <tr><td><code>doctor_specialties</code></td><td>M:N link</td><td>doctor_id, specialty_id</td></tr>
+    <tr><td><code>listings</code></td><td>public listing content</td><td>doctor_id, bio, photos, status (draft/live)</td></tr>
+    <tr><td><code>availability_slots</code></td><td>bookable time</td><td>doctor_id, start, end, status</td></tr>
+    <tr><td><code>leads</code></td><td>captured enquiries</td><td>patient_id, owner_doctor_id, clinic_id, assigned_manager_id, status, source, ai_summary</td></tr>
+    <tr><td><code>lead_events</code></td><td>lead activity log</td><td>lead_id, actor, type, note, at</td></tr>
+    <tr><td><code>bookings</code></td><td>confirmed appts</td><td>lead_id, doctor_id, slot_id, patient_id, status</td></tr>
+    <tr><td><code>reviews</code></td><td>ratings</td><td>doctor_id, patient_id, rating, text, moderated</td></tr>
+    <tr><td><code>notifications</code></td><td>outbound messages</td><td>to, channel, template, status</td></tr>
+    <tr><td><code>doctor_embeddings</code></td><td>semantic search</td><td>doctor_id, embedding vector</td></tr>
+    <tr><td><code>ai_runs</code></td><td>AI audit</td><td>agent, role, input_hash, tokens, cost, at</td></tr>
+    <tr><td><code>audit_log</code></td><td>security audit</td><td>actor, action, entity, before/after, at</td></tr>
+  </table>
+  <div class="callout small"><b>Relationships:</b> a clinic has many doctors; a doctor has many
+  listings, slots, leads, bookings, reviews; a lead may convert to one booking; every lead/booking
+  carries the scoping ids used by RLS. Reserved-but-unused tables for later: <code>payments</code>,
+  <code>consultations</code>, <code>prescriptions</code>, <code>lab_orders</code>.</div>
+</section>
+
+<!-- ================= 9. FRONTEND ================= -->
+<section class="chapter">
+  <h2><span class="secnum">9.</span> Frontend Specification</h2>
+  <h3>Page inventory</h3>
+  <table>
+    <tr><th>Area</th><th>Pages</th></tr>
+    <tr><td>Public (SEO, ISR)</td><td>Home · Specialty landing · Area landing · Search results ·
+      Doctor profile · About/Contact</td></tr>
+    <tr><td>Conversion</td><td><b>Lead popup modal</b> · Booking modal · OTP verify · Confirmation</td></tr>
+    <tr><td>Patient area</td><td>My bookings · Lead status · Profile</td></tr>
+    <tr><td>Staff dashboards</td><td>Super Admin · Admin · Manager · Doctor · Front-desk (role-gated)</td></tr>
+    <tr><td>Doctor tools</td><td>Listing editor · Availability/slots · Lead inbox · Calendar · Reports</td></tr>
+  </table>
+  <h3>Design system (lightweight)</h3>
+  <div class="grid2">
+    <div class="card small"><b>Tone:</b> clean, trustworthy, calm medical palette (teal/white),
+      large tap targets, fast on low-end Android.</div>
+    <div class="card small"><b>Build:</b> Tailwind + shadcn/ui components, RSC by default, client
+      islands only where needed (popup, calendar, dashboards).</div>
+  </div>
+  <ul class="small">
+    <li>Typography: one humanist sans; clear hierarchy; min 16px body on mobile.</li>
+    <li>Accessibility: labelled forms, focus states, color-contrast AA, keyboard-navigable modal.</li>
+    <li>Bilingual-ready copy (Hindi + English) via i18n keys from day one.</li>
+  </ul>
+</section>
+
+<!-- ================= 10. BACKEND ================= -->
+<section class="chapter">
+  <h2><span class="secnum">10.</span> Backend &amp; API Specification</h2>
+  <p>Mutations use <b>Server Actions</b>; webhooks and AI use <b>Route Handlers</b>. RBAC is
+  enforced by RLS <i>and</i> a server-side check in each action.</p>
+  <table>
+    <tr><th>Surface</th><th>Examples</th><th>Auth</th></tr>
+    <tr><td>Lead intake</td><td><code>submitLead()</code>, <code>verifyOtp()</code></td><td>public + OTP</td></tr>
+    <tr><td>Search / AI</td><td><code>POST /api/search</code>, <code>POST /api/triage</code></td><td>public (rate-limited)</td></tr>
+    <tr><td>Lead ops</td><td><code>assignLead()</code>, <code>updateLeadStatus()</code></td><td>Manager/Admin (RLS)</td></tr>
+    <tr><td>Booking</td><td><code>createBooking()</code>, <code>reschedule()</code></td><td>staff / patient (own)</td></tr>
+    <tr><td>Listing</td><td><code>upsertListing()</code>, <code>verifyDoctor()</code></td><td>Doctor / Admin</td></tr>
+    <tr><td>Webhooks</td><td><code>/api/webhooks/sms</code>, <code>/api/webhooks/whatsapp</code></td><td>signed</td></tr>
+    <tr><td>Cron</td><td>reminder dispatch, SLA escalation, daily digest</td><td>Vercel Cron</td></tr>
+  </table>
+  <div class="callout small"><b>Pattern:</b> every action → (1) authenticate, (2) authorize via role
+  + RLS, (3) validate input (zod), (4) mutate, (5) write <code>audit_log</code> / <code>lead_events</code>,
+  (6) fire notification/realtime event.</div>
+</section>
+
+<!-- ================= 11. DEPLOYMENT ================= -->
+<section class="chapter">
+  <h2><span class="secnum">11.</span> Deployment — Vercel + Supabase</h2>
+  <h3>Pipeline</h3>
+  <pre class="tree">git push branch ──► Vercel Preview deploy (unique URL) ──► review/QA
+        └─► merge to main ──► Vercel Production deploy ──► promote
+                              Supabase migrations applied via CI / Supabase MCP (scoped write)
+        rollback = re-promote previous Vercel build  (+ down-migration if schema changed)</pre>
+  <h3>Environments</h3>
+  <ul>
+    <li><b>Preview</b> (per-branch) and <b>Production</b> on Vercel.</li>
+    <li>Supabase: separate project (or branch DB) per environment.</li>
+    <li>Migrations live in <code>supabase/migrations</code>; never edit prod schema by hand.</li>
+  </ul>
+  <h3>Environment variables (inventory)</h3>
+  <pre>NEXT_PUBLIC_SUPABASE_URL          SUPABASE_SERVICE_ROLE_KEY
+NEXT_PUBLIC_SUPABASE_ANON_KEY     AI_GATEWAY_API_KEY
+SUPABASE_PROJECT_REF              SMS_PROVIDER_KEY / WHATSAPP_TOKEN
+SUPABASE_ACCESS_TOKEN (MCP)       OTP_SECRET / CRON_SECRET</pre>
+  <div class="callout warn small"><b>Secrets rule:</b> never commit secrets. They live only in
+  Vercel/Supabase env settings. <code>.mcp.json</code> references <code>${VARS}</code> only.</div>
+</section>
+
+<!-- ================= 12. COST ================= -->
+<section class="chapter">
+  <h2><span class="secnum">12.</span> Cost Analysis (INR + USD)</h2>
+  <p class="small muted">Estimates as of mid-2026; confirm live pricing on each dashboard. USD≈₹85.
+  AI cost depends on volume &amp; model tiering — the ranges assume aggressive use of Haiku.</p>
+
+  <h3>Per-service pricing</h3>
+  <table>
+    <tr><th>Service</th><th>Free / entry</th><th>Paid tier</th><th>What you get</th></tr>
+    <tr><td><b>Vercel</b></td><td>Hobby — $0</td><td>Pro — ~$20/mo (₹1,700)</td><td>builds, hosting,
+      functions, cron, preview deploys</td></tr>
+    <tr><td><b>Supabase</b></td><td>Free — $0</td><td>Pro — ~$25/mo (₹2,100)</td><td>Postgres, Auth,
+      Storage, RLS, pgvector, Realtime</td></tr>
+    <tr><td><b>AI (Claude via Gateway)</b></td><td>pay-per-token</td><td>scales with usage</td>
+      <td>Haiku cheap · Sonnet mid · Opus premium</td></tr>
+    <tr><td><b>SMS</b></td><td>—</td><td>~₹0.15–0.25 / SMS</td><td>OTP &amp; confirmations</td></tr>
+    <tr><td><b>WhatsApp</b></td><td>—</td><td>~₹0.10–0.35 / conversation</td><td>confirmations &amp; reminders</td></tr>
+    <tr><td><b>Domain</b></td><td>—</td><td>~₹900 / year</td><td>.in / .com</td></tr>
+  </table>
+
+  <h3>Monthly total by stage</h3>
+  <table>
+    <tr><th>Stage</th><th>Assumptions</th><th>Vercel</th><th>Supabase</th><th>AI</th><th>SMS/WA</th><th class="kpi">Total / mo</th></tr>
+    <tr><td><b>MVP (Udaipur)</b></td><td>~1k leads, ~10k searches</td><td>Free–Pro</td><td>Free</td>
+      <td>₹500–2,000</td><td>₹500–1,500</td><td class="kpi">₹2,000–5,000</td></tr>
+    <tr><td><b>Growth</b></td><td>~10k leads, ~100k searches</td><td>₹1,700</td><td>₹2,100</td>
+      <td>₹5,000–15,000</td><td>₹3,000–8,000</td><td class="kpi">₹15,000–30,000</td></tr>
+    <tr><td><b>Scale</b></td><td>~100k leads, multi-city</td><td>₹1,700+</td><td>₹8,000+</td>
+      <td>₹30,000–90,000</td><td>₹20,000–60,000</td><td class="kpi">₹60,000–1,60,000</td></tr>
+  </table>
+  <div class="callout good small"><b>Stay near-free in MVP:</b> Vercel Hobby + Supabase Free + Haiku
+  for almost everything + SMS only for OTP (WhatsApp for the rest). Realistic early bill: a few
+  hundred to a couple thousand rupees a month.</div>
+  <h3>Cost-control levers</h3>
+  <ul class="small">
+    <li><b>Model tiering</b> (Haiku first) — the single biggest lever.</li>
+    <li><b>Cache</b> embeddings &amp; frequent AI answers; reuse doctor vectors.</li>
+    <li><b>Rate-limit</b> public AI endpoints; cap tokens per call; per-tenant ceilings.</li>
+    <li><b>Prefer WhatsApp</b> over SMS where possible; SMS only for OTP.</li>
+    <li><b>ISR caching</b> cuts function invocations on SEO pages.</li>
+  </ul>
+</section>
+
+<!-- ================= 13. SECURITY ================= -->
+<section class="chapter">
+  <h2><span class="secnum">13.</span> Security &amp; Compliance (India / DPDP)</h2>
+  <table>
+    <tr><th>Area</th><th>Approach</th></tr>
+    <tr><td><b>DPDP Act 2023</b></td><td>explicit consent at lead capture; purpose limitation;
+      data-principal rights (access/erase); consent + retention logged.</td></tr>
+    <tr><td><b>Health-data sensitivity</b></td><td>minimize collection; symptom text treated as
+      sensitive; encrypt at rest (Supabase) &amp; in transit (HTTPS).</td></tr>
+    <tr><td><b>Authorization</b></td><td>least-privilege <b>RLS</b> on every table; server-side
+      checks; no client-trusted authorization.</td></tr>
+    <tr><td><b>Auditability</b></td><td><code>audit_log</code> for staff actions, <code>ai_runs</code>
+      for AI actions, <code>lead_events</code> for lead history.</td></tr>
+    <tr><td><b>AI safety</b></td><td>medical disclaimers; triage-not-diagnosis; red-flag routing;
+      PII redaction before model calls; zero-retention gateway option.</td></tr>
+    <tr><td><b>Secrets</b></td><td>env-var only; scoped tokens; rotation; read-only MCP by default.</td></tr>
+    <tr><td><b>Future: ABDM/ABHA</b></td><td>data model leaves room for ABHA health-ID linkage and
+      consent-manager flows when we add records/teleconsult.</td></tr>
+  </table>
+  <div class="callout warn small"><b>Not a medical device.</b> The platform assists discovery and
+  booking; it does not provide diagnosis or treatment. All AI medical output carries a disclaimer.</div>
+</section>
+
+<!-- ================= 14. METHODOLOGY ================= -->
+<section class="chapter">
+  <h2><span class="secnum">14.</span> Build Methodology — Claude Code + Codex + MCP</h2>
+  <p>This is the part you emphasized: <b>how</b> the project is built so nothing is forgotten and
+  nothing is overwritten blindly. Two AI coding agents collaborate through markdown files, a shared
+  MCP toolchain, and a strict version-backup discipline.</p>
+
+  <h3>14.1 Two-agent division of labour <span class="tag">your "Code vs Codex" question</span></h3>
+  <table>
+    <tr><th>Claude Code — <i>architect &amp; reviewer</i></th><th>Codex — <i>builder</i></th></tr>
+    <tr><td>Architecture, data model, <b>Supabase schema + RLS + migrations</b></td>
+        <td>UI components, forms, dashboards, list/table screens</td></tr>
+    <tr><td>The <b>AI layer</b> (agents, prompts, tools, gateway wiring, embeddings)</td>
+        <td>Tests, fixtures, seed data</td></tr>
+    <tr><td>Security/compliance, auth/RBAC, audit logging</td>
+        <td>Boilerplate CRUD &amp; route wiring once schema is fixed</td></tr>
+    <tr><td>Code review of Codex output; tricky bugs; final integration</td>
+        <td>Repetitive, well-specified work matching existing patterns</td></tr>
+  </table>
+  <p class="small">Each agent reads its own instruction file: <b><code>CLAUDE.md</code></b> (Claude
+  Code) and <b><code>AGENTS.md</code></b> (Codex). They exchange work via <code>docs/HANDOVER.md</code>.</p>
+
+  <h3>14.2 Repository file &amp; folder structure <span class="tag">your "what files" question</span></h3>
+  <pre class="tree">f:\Doctor\
+├─ README.md                      project overview + rules (entry point)
+├─ CLAUDE.md                      instructions for Claude Code  (the architect)
+├─ AGENTS.md                      instructions for Codex        (the builder)
+├─ .mcp.json                      shared MCP servers (supabase, vercel, playwright, fs)
+├─ Doctor_Platform_Blueprint.pdf  this master spec
+├─ docs/
+│  ├─ PRD.md            product requirements
+│  ├─ ARCHITECTURE.md   system + data architecture
+│  ├─ RBAC.md           roles + permission matrix
+│  ├─ AI-AGENTS.md      the 5 agents + LLM choice
+│  ├─ MCP.md            MCP setup &amp; policy
+│  ├─ HANDOVER.md       live hand-off between the two agents
+│  ├─ DECISION-LOG.md   dated, append-only record of every decision
+│  └─ VERSIONING.md     backup-before-new-version discipline
+├─ .versions/           frozen snapshots: v1/ v2/ … (never edited)
+├─ app/                 Next.js routes (created during build)
+├─ components/          UI components
+├─ lib/                 utilities, supabase client, auth helpers
+├─ agents/              AI agent definitions, prompts, tools
+└─ supabase/            schema + migrations + seed</pre>
+
+  <h3>14.3 The markdown memory system <span class="tag">"save every chat &amp; contact"</span></h3>
+  <ul>
+    <li><b><code>docs/DECISION-LOG.md</code></b> — append-only; every decision with date, what, why,
+      who. Never delete an entry. This is the project's long-term memory.</li>
+    <li><b><code>docs/HANDOVER.md</code></b> — the living "current state": what was just done, what's
+      next, open questions. Overwrite the top each session; append to History.</li>
+    <li><b>Contacts &amp; key facts</b> — captured in the relevant doc (e.g. provider contacts in
+      <code>ARCHITECTURE.md</code>), and important cross-session facts saved to the assistant's
+      memory so they survive new chats.</li>
+  </ul>
+
+  <h3>14.4 Versioning &amp; backup <span class="tag">"keep old version before new"</span></h3>
+  <p>Before starting any new version, <b>snapshot the current working tree into
+  <code>.versions/vN/</code></b> (the version you are leaving), tag the git commit, and add a row to
+  the version table in <code>VERSIONING.md</code>. Snapshots are read-only and never deleted.</p>
+  <pre># before building v2, freeze v1:
+$v = "v1"
+New-Item -ItemType Directory -Force ".versions/$v" | Out-Null
+robocopy . ".versions/$v" /E /XD .git node_modules .versions /NFL /NDL | Out-Null
+git tag v1</pre>
+
+  <h3>14.5 "Empty / placeholder files" explained <span class="tag">your "empty files" question</span></h3>
+  <p>We create some files <b>before</b> there is code in them, on purpose:</p>
+  <table>
+    <tr><th>Placeholder</th><th>Why it exists empty/early</th></tr>
+    <tr><td><code>docs/HANDOVER.md</code></td><td>so either agent always has a known place to read/write status</td></tr>
+    <tr><td><code>docs/DECISION-LOG.md</code></td><td>so decisions are logged from commit #1</td></tr>
+    <tr><td><code>.versions/</code> (with README)</td><td>reserves the backup location before the first snapshot</td></tr>
+    <tr><td><code>.mcp.json</code></td><td>defines the shared toolchain before any feature code</td></tr>
+    <tr><td><code>agents/</code>, <code>supabase/</code> stubs</td><td>fix the structure so both agents
+      put things in the same place (consistency)</td></tr>
+  </table>
+
+  <h3>14.6 MCP toolchain <span class="tag">"make MCP"</span></h3>
+  <p>A shared <code>.mcp.json</code> gives both agents the same safe tools (full policy in
+  <code>docs/MCP.md</code>):</p>
+  <table>
+    <tr><th>Server</th><th>Use</th><th>Policy</th></tr>
+    <tr><td><b>supabase</b></td><td>inspect schema, queries, migrations, types</td><td>read-only by
+      default; scoped write only for a deliberate migration session</td></tr>
+    <tr><td><b>vercel</b></td><td>deployments, logs, env, status</td><td>hosted HTTP MCP (OAuth)</td></tr>
+    <tr><td><b>playwright</b></td><td>E2E checks, screenshots, render PDFs</td><td>used to verify UI</td></tr>
+    <tr><td><b>filesystem</b></td><td>scoped file access</td><td>locked to <code>f:\Doctor</code></td></tr>
+  </table>
+  <p class="small"><b>Future product MCP:</b> we may expose our own MCP server so internal agents can
+  query leads/bookings (RLS-scoped, audit-logged) — designed around the AI service role.</p>
+  <div class="callout good small"><b>Consistency rule:</b> both agents use the <i>same</i>
+  <code>.mcp.json</code>, the <i>same</i> naming conventions, and the <i>same</i> folder structure.
+  Any new server or convention is recorded in <code>DECISION-LOG.md</code> first.</div>
+</section>
+
+<!-- ================= 15. PLAN ================= -->
+<section class="chapter">
+  <h2><span class="secnum">15.</span> Phased Project Plan</h2>
+  <table>
+    <tr><th>Phase</th><th>Milestones</th><th>AI agents</th><th>Rough effort</th></tr>
+    <tr><td><b>0 — Setup</b></td><td>repo + docs scaffold (done), Next.js + Supabase init, env +
+      MCP, CI/CD, base schema + RLS</td><td>—</td><td>~1 week</td></tr>
+    <tr><td><b>1 — MVP</b></td><td>listings + onboarding, search, <b>lead popup</b>, lead pipeline,
+      booking, RBAC dashboards, notifications (OTP+confirm)</td><td>Smart Search, Lead-Form
+      Assistant</td><td>~4–6 weeks</td></tr>
+    <tr><td><b>2 — Engage</b></td><td>reminders, reviews, analytics, symptom triage, staff copilot,
+      content/SEO, more cities</td><td>+ Triage, Staff Copilot, Content/SEO</td><td>~4–6 weeks</td></tr>
+    <tr><td><b>3 — Expand</b></td><td>payments, teleconsult, labs/medicine, health records,
+      ABDM/ABHA</td><td>agent suite extended</td><td>roadmap</td></tr>
+  </table>
+  <h3>Definition of done (every feature)</h3>
+  <p class="small">Builds clean · RLS verified per role · decision logged · handover updated ·
+  version snapshotted on a version bump · tests pass.</p>
+</section>
+
+<!-- ================= 16. APPENDICES ================= -->
+<section class="chapter">
+  <h2><span class="secnum">16.</span> Appendices — Ready-to-paste Templates</h2>
+  <p class="small muted">These also exist as live files in the repo. Reproduced here for handover.</p>
+
+  <h3>A. <code>AGENTS.md</code> (Codex) — skeleton</h3>
+  <pre># AGENTS.md — Instructions for Codex
+Project: AI-first doctor listing + lead + booking portal (Next.js + Supabase on Vercel).
+You build; Claude Code architects (see CLAUDE.md). Read docs/HANDOVER.md for current task.
+OWN: UI, forms, dashboards, tests, CRUD wiring (after schema fixed).
+HAND BACK: schema/RLS, AI agents, auth/RBAC, compliance, new deps.
+RULES: match existing patterns · log to DECISION-LOG.md · update HANDOVER.md · snapshot before
+       version bump · no secrets in code · use .mcp.json servers.</pre>
+
+  <h3>B. Handover entry — template</h3>
+  <pre>## Current state
+Date: YYYY-MM-DD · From: <agent> · To: <agent> · Version: vN
+What was done: …
+What's next: 1) …  2) …
+Open questions: …
+Don't forget: snapshot before version bump; log decisions.</pre>
+
+  <h3>C. Decision-log entry — template</h3>
+  <pre>### YYYY-MM-DD — <short title>
+- Decision: …
+- Why: …
+- By: <agent / person></pre>
+
+  <h3>D. Starter SQL (shape only)</h3>
+  <pre>create table doctors (
+  id uuid primary key default gen_random_uuid(),
+  profile_id uuid references profiles(id),
+  clinic_id  uuid references clinics(id),
+  fee_paise  int not null default 0,
+  verified   boolean not null default false,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+alter table doctors enable row level security;
+-- policy: a doctor can read/update only their own row; admins all.</pre>
+
+  <h3>E. Glossary</h3>
+  <table>
+    <tr><th>Term</th><th>Meaning</th></tr>
+    <tr><td>Lead</td><td>a captured patient enquiry (from the popup) before it becomes a booking</td></tr>
+    <tr><td>RLS</td><td>Row Level Security — Postgres row-level authorization</td></tr>
+    <tr><td>RBAC</td><td>Role-Based Access Control</td></tr>
+    <tr><td>ISR</td><td>Incremental Static Regeneration — cached, SEO-friendly pages</td></tr>
+    <tr><td>MCP</td><td>Model Context Protocol — safe tool access for AI agents</td></tr>
+    <tr><td>pgvector</td><td>Postgres extension storing embeddings for semantic search</td></tr>
+    <tr><td>DPDP</td><td>India's Digital Personal Data Protection Act, 2023</td></tr>
+    <tr><td>ABDM/ABHA</td><td>India's health-ID / digital health mission (future)</td></tr>
+  </table>
+
+  <div class="callout good" style="margin-top:18px"><b>You are ready to build.</b> Start at
+  <code>README.md</code>, follow <code>CLAUDE.md</code> / <code>AGENTS.md</code>, keep
+  <code>HANDOVER.md</code> and <code>DECISION-LOG.md</code> alive, snapshot before every new version,
+  and let the five agents do the heavy lifting.</div>
+</section>
+
+</body>
+</html>

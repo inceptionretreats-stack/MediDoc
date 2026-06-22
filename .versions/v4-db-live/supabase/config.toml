@@ -1,0 +1,10 @@
+# Supabase local/project config. Run `supabase init` then `supabase link` once you
+# create the project (region: closest to India). Apply migrations with `supabase db push`.
+project_id = "doctor-platform"
+
+[db]
+major_version = 15
+
+[auth]
+enable_signup = true
+# Phone/OTP for the patient lead flow is configured in the dashboard during Phase 1.
