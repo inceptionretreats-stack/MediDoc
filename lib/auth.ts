@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Role } from "@/lib/constants";
 
@@ -74,4 +75,26 @@ export function requireRole(
   if (!hasRole(session, allowed)) {
     throw new Error("forbidden");
   }
+}
+
+export async function requirePageRole(
+  allowed: Role[],
+  pathname: string,
+): Promise<AuthSession> {
+  const session = await getCurrentUser();
+  if (!session) {
+    redirect(`/sign-in?next=${encodeURIComponent(pathname)}`);
+  }
+  if (!hasRole(session, allowed)) {
+    redirect("/403");
+  }
+  return session;
+}
+
+export async function requireSignedIn(pathname: string): Promise<AuthSession> {
+  const session = await getCurrentUser();
+  if (!session) {
+    redirect(`/sign-in?next=${encodeURIComponent(pathname)}`);
+  }
+  return session;
 }
