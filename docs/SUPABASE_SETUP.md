@@ -123,7 +123,7 @@ supabase login
 
 From the project root (`c:\web applications\Doctor\Doctor\`):
 
-```powershell
+```powershell   
 Copy-Item .env.example .env.local
 ```
 
